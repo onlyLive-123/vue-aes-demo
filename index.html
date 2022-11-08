@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <!--将页面转成webApp的形式-->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <!--顶部的bar的颜色 default/black 默认白色或者黑色 black-translucent/透明色-->
+  <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+  <!--保存到桌面的图标-->
+  <link rel="apple-touch-icon" sizes="114x114" href="static/favicon.ico"/>
+  <!--打开的启动页图片-->
+  <!--<link rel="apple-touch-startup-image" href="static/favicon.ico"/>-->
+  <!--app的title-->
+  <meta name="apple-mobile-web-app-title" content="hellox你好">
+
+  <meta name="theme-color" content="#3A89FF">
+
+  <link rel="icon" href="static/favicon.ico">
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0,viewport-fit=cover"
+        name="viewport"/>
+  <title>vue-工具类</title>
+</head>
+<body style="margin: 0;">
+<div id="app"></div>
+<!-- built files will be auto injected -->
+</body>
+<script type="text/javascript">
+  document.addEventListener('plusready', function () {
+    //console.log("所有plus api都应该在此事件发生后调用，否则会出现plus is undefined。")
+    mui.init({
+      swipeBack: true,
+      keyEventBind: {
+        backbutton: true, //关闭back按键监听
+      }
+    });
+    //首页返回键处理
+    // 处理逻辑： 1s内，连续两次按返回键，则退出应用；
+    let first = null;
+    mui.back = function () {
+      // 首次按键， 提示 再按一次退出应用
+      if (!first) {
+        first = new Date().getTime();//记录第一次按下回退键的时间
+        let route_name = window.location.hash;
+        //到无上一页了 就提示退出
+        if (route_name.endsWith('/')) {
+          mui.toast("再按一次退出应用");
+          setTimeout(function () {
+            //1s 后清除
+            first = null;
+          }, 500);
+        } else {
+          history.go(-1); // 回退到上一页
+          first = null;
+        }
+      } else {
+        if (new Date().getTime() - first < 500) {
+          //如果两次按下的时间小于1s
+          plus.runtime.quit(); //那么就退出app
+        }
+      }
+    }
+  });
+</script>
+</html>
